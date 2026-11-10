@@ -32,6 +32,12 @@ public sealed class InitRequest
     /// <summary>Browser redirect URLs</summary>
     public RedirectRequest? Redirect { get; set; }
 
+    /// <summary>Payment page theme</summary>
+    public Theme? Theme { get; set; }
+
+    /// <summary>Order with its articles, for payment methods that support it</summary>
+    public Order? Order { get; set; }
+
     /// <summary>Webhook override, merchant configuration applies when null</summary>
     public WebhookRequest? Webhook { get; set; }
 
@@ -41,7 +47,7 @@ public sealed class InitRequest
     /// <summary>Merchant reference data</summary>
     public Metadata? Metadata { get; set; }
 
-    /// <summary>Properties not modeled here, sent as is, for example <c>TWI</c> or <c>theme</c></summary>
+    /// <summary>Properties not modeled here, sent as is, for example <c>TWI</c> or <c>PAP</c></summary>
     [JsonExtensionData]
     public IDictionary<string, object?>? AdditionalProperties { get; set; }
 }
@@ -160,6 +166,9 @@ public sealed class SettleRequest
     /// <summary>Optional customer reference</summary>
     public string? Refno2 { get; set; }
 
+    /// <summary>Order with its articles, for payment methods that support it</summary>
+    public Order? Order { get; set; }
+
     /// <summary>Properties not modeled here, sent as is</summary>
     [JsonExtensionData]
     public IDictionary<string, object?>? AdditionalProperties { get; set; }
@@ -190,6 +199,9 @@ public sealed class CreditRequest
 
     /// <summary>Merchant reference data</summary>
     public Metadata? Metadata { get; set; }
+
+    /// <summary>Order with its articles, for payment methods that support it</summary>
+    public Order? Order { get; set; }
 
     /// <summary>Properties not modeled here, sent as is</summary>
     [JsonExtensionData]

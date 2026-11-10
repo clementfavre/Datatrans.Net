@@ -7,10 +7,11 @@ using Datatrans.Net.Serialization;
 namespace Datatrans.Net;
 
 /// <summary>Client of the Datatrans API</summary>
-public sealed class DatatransClient : IDatatransClient, ITransactionsApi
+public sealed class DatatransClient : IDatatransClient, ITransactionsApi, IAliasesApi
 {
     private const string IdempotencyHeader = "Idempotency-Key";
     private const string TransactionsPath = "/v1/transactions";
+    private const string AliasesPath = "/v1/aliases";
 
     private readonly HttpClient _httpClient;
     private readonly string _apiBaseUrl;
@@ -40,6 +41,9 @@ public sealed class DatatransClient : IDatatransClient, ITransactionsApi
     public ITransactionsApi Transactions => this;
 
     /// <inheritdoc />
+    public IAliasesApi Aliases => this;
+
+    /// <inheritdoc />
     public Uri GetPaymentPageUrl(string transactionId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(transactionId);
@@ -59,6 +63,32 @@ public sealed class DatatransClient : IDatatransClient, ITransactionsApi
 
         return response;
     }
+
+    /// <inheritdoc />
+    public Task<AuthorizeResponse> AuthorizeAsync(AuthorizeRequest request, string? idempotencyKey = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return SendAsync<AuthorizeResponse>(HttpMethod.Post, TransactionsPath + "/authorize", request,
+            idempotencyKey, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<AuthorizeResponse> ValidateAsync(ValidateRequest request, string? idempotencyKey = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return SendAsync<AuthorizeResponse>(HttpMethod.Post, TransactionsPath + "/validate", request,
+            idempotencyKey, cancellationToken);
+    }
+
+    Task<AliasInfoResponse> IAliasesApi.GetAsync(string alias, CancellationToken cancellationToken) =>
+        SendAsync<AliasInfoResponse>(HttpMethod.Get, AliasPath(alias), null, null, cancellationToken);
+
+    Task IAliasesApi.DeleteAsync(string alias, CancellationToken cancellationToken) =>
+        SendAsync(HttpMethod.Delete, AliasPath(alias), null, null, cancellationToken);
 
     /// <inheritdoc />
     public Task<StatusResponse> StatusAsync(string transactionId, CancellationToken cancellationToken = default) =>
@@ -88,6 +118,13 @@ public sealed class DatatransClient : IDatatransClient, ITransactionsApi
 
         return SendAsync<CreditResponse>(HttpMethod.Post, TransactionPath(transactionId) + "/credit", request,
             idempotencyKey, cancellationToken);
+    }
+
+    private static string AliasPath(string alias)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(alias);
+
+        return $"{AliasesPath}/{Uri.EscapeDataString(alias)}";
     }
 
     private static string TransactionPath(string transactionId)

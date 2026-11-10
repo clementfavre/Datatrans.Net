@@ -29,7 +29,7 @@ public sealed class DatatransException : Exception
     public string? ResponseBody { get; }
 }
 
-/// <summary>Error codes returned by the transactions API</summary>
+/// <summary>Error codes returned by the transactions and aliases APIs</summary>
 public enum DatatransErrorCode
 {
 #pragma warning disable CS1591
@@ -70,6 +70,28 @@ public enum DatatransErrorCode
     RequestIdExist,
     DuplicateRefno,
     TransactionNotFound,
-    InvalidCard
+    InvalidCard,
+
+    // Aliases API
+    PlainNotFound,
+    InvalidExpiration,
+    InvalidFingerprint,
+    IllegalArgument,
+    CouldNotObtainNetworkToken,
+    InvalidPlainValueForTestMode,
+    MaxRequestsPerCallExceeded,
+    VelocityError,
+    InvalidPlainValue,
+    NotVerified,
+    FingerprintNotFound,
+    InternalError,
+    InvalidConfiguration,
+    CouldNotDecryptToken,
+    AliasNotFound,
+    CouldNotDeleteNetworkToken,
+    TokenProviderUnavailable,
+    CouldNotObtainCardArt,
+    DeleteNotAllowed,
+    ServiceNotAllowed
 #pragma warning restore CS1591
 }

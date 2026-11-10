@@ -39,6 +39,11 @@ if (status.IsPaid) { }
 await client.Transactions.SettleAsync(transactionId, new SettleRequest { Amount = 1000, Currency = "CHF", Refno = "order-42" });
 await client.Transactions.CancelAsync(transactionId);
 await client.Transactions.CreditAsync(transactionId, new CreditRequest { Amount = 500, Currency = "CHF", Refno = "refund-42" });
+
+// Saved cards: charge, check or delete an alias
+await client.Transactions.AuthorizeAsync(new AuthorizeRequest { Amount = 1000, Currency = "CHF", Refno = "order-43", Card = new AliasCard { Alias = alias } });
+await client.Aliases.GetAsync(alias);
+await client.Aliases.DeleteAsync(alias);
 ```
 
 Webhook, on the raw request body:

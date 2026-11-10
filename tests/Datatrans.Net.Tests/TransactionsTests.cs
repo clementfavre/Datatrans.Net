@@ -21,7 +21,13 @@ public class TransactionsTests
             PaymentMethods = [PaymentMethods.Visa, PaymentMethods.Twint],
             AutoSettle = true,
             Redirect = new RedirectRequest { SuccessUrl = "https://shop.test/ok" },
-            AdditionalProperties = new Dictionary<string, object?> { ["theme"] = new { name = "DT2015" } }
+            Theme = new Theme { Configuration = new ThemeConfiguration { BrandColor = "#336699", BrandTitle = false } },
+            Order = new Order
+            {
+                ShippingAmount = 100,
+                Articles = [new Article { Id = "sku-1", Name = "Bottle", Quantity = 2, Price = 900, PriceWithoutVat = 833 }]
+            },
+            AdditionalProperties = new Dictionary<string, object?> { ["PAP"] = new { imageUrl = "https://shop.test/logo.png" } }
         }, idempotencyKey: "key-1");
 
         Assert.Equal("210707103033915995", response.TransactionId);
@@ -44,7 +50,19 @@ public class TransactionsTests
         Assert.True(root.GetProperty("autoSettle").GetBoolean());
         Assert.Equal(["VIS", "TWI"], root.GetProperty("paymentMethods").EnumerateArray().Select(e => e.GetString()));
         Assert.Equal("https://shop.test/ok", root.GetProperty("redirect").GetProperty("successUrl").GetString());
-        Assert.Equal("DT2015", root.GetProperty("theme").GetProperty("name").GetString());
+        Assert.Equal("https://shop.test/logo.png", root.GetProperty("PAP").GetProperty("imageUrl").GetString());
+
+        var theme = root.GetProperty("theme").GetProperty("configuration");
+        Assert.Equal("#336699", theme.GetProperty("brandColor").GetString());
+        Assert.False(theme.GetProperty("brandTitle").GetBoolean());
+        Assert.False(theme.TryGetProperty("logoSrc", out _));
+
+        var order = root.GetProperty("order");
+        Assert.Equal(100, order.GetProperty("shippingAmount").GetInt64());
+        var article = order.GetProperty("articles")[0];
+        Assert.Equal("sku-1", article.GetProperty("id").GetString());
+        Assert.Equal(2, article.GetProperty("quantity").GetInt32());
+        Assert.Equal(833, article.GetProperty("priceWithoutVAT").GetInt64());
 
         // Null properties must not be sent, the API rejects unknown or empty ones
         Assert.False(root.TryGetProperty("refno2", out _));

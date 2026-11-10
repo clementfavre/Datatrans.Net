@@ -12,6 +12,14 @@ public interface ITransactionsApi
     Task<InitResponse> InitAsync(InitRequest request, string? idempotencyKey = null,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Authorizes a payment with an alias, without the payment page</summary>
+    Task<AuthorizeResponse> AuthorizeAsync(AuthorizeRequest request, string? idempotencyKey = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Checks that an alias is still valid, no amount is charged</summary>
+    Task<AuthorizeResponse> ValidateAsync(ValidateRequest request, string? idempotencyKey = null,
+        CancellationToken cancellationToken = default);
+
     /// <summary>Gets the status of a transaction</summary>
     Task<StatusResponse> StatusAsync(string transactionId, CancellationToken cancellationToken = default);
 
