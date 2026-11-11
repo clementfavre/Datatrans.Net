@@ -32,6 +32,24 @@ public sealed class InitRequest
     /// <summary>Browser redirect URLs</summary>
     public RedirectRequest? Redirect { get; set; }
 
+    /// <summary>Billing address</summary>
+    public BillingAddress? Billing { get; set; }
+
+    /// <summary>Shipping address</summary>
+    public ShippingAddress? Shipping { get; set; }
+
+    /// <summary>PayPal parameters</summary>
+    [JsonPropertyName("PAP")]
+    public PayPalInit? PayPal { get; set; }
+
+    /// <summary>PostFinance Card parameters</summary>
+    [JsonPropertyName("PFC")]
+    public PaymentMethodAlias? PostFinanceCard { get; set; }
+
+    /// <summary>PostFinance Pay parameters</summary>
+    [JsonPropertyName("PFP")]
+    public PostFinancePayInit? PostFinancePay { get; set; }
+
     /// <summary>Payment page theme</summary>
     public Theme? Theme { get; set; }
 
@@ -47,7 +65,7 @@ public sealed class InitRequest
     /// <summary>Merchant reference data</summary>
     public Metadata? Metadata { get; set; }
 
-    /// <summary>Properties not modeled here, sent as is, for example <c>TWI</c> or <c>PAP</c></summary>
+    /// <summary>Properties not modeled here, sent as is, for example <c>TWI</c> or <c>KLN</c></summary>
     [JsonExtensionData]
     public IDictionary<string, object?>? AdditionalProperties { get; set; }
 }
@@ -168,6 +186,9 @@ public sealed class SettleRequest
 
     /// <summary>Order with its articles, for payment methods that support it</summary>
     public Order? Order { get; set; }
+
+    /// <summary>Set to settle the authorized amount in several steps</summary>
+    public PartialCapture? PartialCapture { get; set; }
 
     /// <summary>Properties not modeled here, sent as is</summary>
     [JsonExtensionData]

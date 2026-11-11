@@ -20,6 +20,15 @@ public interface ITransactionsApi
     Task<AuthorizeResponse> ValidateAsync(ValidateRequest request, string? idempotencyKey = null,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Authorizes a transaction that was only authenticated, see <c>option.authenticationOnly</c></summary>
+    Task<AuthorizeAuthenticatedResponse> AuthorizeAuthenticatedAsync(string transactionId,
+        AuthorizeAuthenticatedRequest request, string? idempotencyKey = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Increases the amount of an authorized transaction, credit cards only</summary>
+    Task<IncreaseResponse> IncreaseAsync(string transactionId, IncreaseRequest request,
+        string? idempotencyKey = null, CancellationToken cancellationToken = default);
+
     /// <summary>Gets the status of a transaction</summary>
     Task<StatusResponse> StatusAsync(string transactionId, CancellationToken cancellationToken = default);
 

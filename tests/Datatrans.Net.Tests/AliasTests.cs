@@ -43,7 +43,7 @@ public class AliasTests
             Amount = 500,
             Currency = "CHF",
             Refno = "order-44",
-            Twint = new TwintAlias { Alias = "twint-alias" }
+            Twint = new PaymentMethodAlias { Alias = "twint-alias" }
         });
 
         Assert.Equal("""{"amount":500,"currency":"CHF","refno":"order-44","TWI":{"alias":"twint-alias"}}""",

@@ -87,6 +87,35 @@ public sealed class DatatransClient : IDatatransClient, ITransactionsApi, IAlias
     Task<AliasInfoResponse> IAliasesApi.GetAsync(string alias, CancellationToken cancellationToken) =>
         SendAsync<AliasInfoResponse>(HttpMethod.Get, AliasPath(alias), null, null, cancellationToken);
 
+    Task<AliasInfoResponse> IAliasesApi.UpdateAsync(string alias, AliasPatchRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return SendAsync<AliasInfoResponse>(HttpMethod.Patch, AliasPath(alias), request, null, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<AuthorizeAuthenticatedResponse> AuthorizeAuthenticatedAsync(string transactionId,
+        AuthorizeAuthenticatedRequest request, string? idempotencyKey = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return SendAsync<AuthorizeAuthenticatedResponse>(HttpMethod.Post,
+            TransactionPath(transactionId) + "/authorize", request, idempotencyKey, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<IncreaseResponse> IncreaseAsync(string transactionId, IncreaseRequest request,
+        string? idempotencyKey = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return SendAsync<IncreaseResponse>(HttpMethod.Post, TransactionPath(transactionId) + "/increase",
+            request, idempotencyKey, cancellationToken);
+    }
+
     Task IAliasesApi.DeleteAsync(string alias, CancellationToken cancellationToken) =>
         SendAsync(HttpMethod.Delete, AliasPath(alias), null, null, cancellationToken);
 

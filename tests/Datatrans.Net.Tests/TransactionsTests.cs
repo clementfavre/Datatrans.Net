@@ -27,7 +27,11 @@ public class TransactionsTests
                 ShippingAmount = 100,
                 Articles = [new Article { Id = "sku-1", Name = "Bottle", Quantity = 2, Price = 900, PriceWithoutVat = 833 }]
             },
-            AdditionalProperties = new Dictionary<string, object?> { ["PAP"] = new { imageUrl = "https://shop.test/logo.png" } }
+            PayPal = new PayPalInit { ImageUrl = "https://shop.test/logo.png" },
+            PostFinancePay = new PostFinancePayInit { StepUp = true },
+            Billing = new BillingAddress { City = "Sion", Country = "CHE" },
+            Shipping = new ShippingAddress { City = "Sion", Carrier = "Post" },
+            AdditionalProperties = new Dictionary<string, object?> { ["KLN"] = new { hppTitle = "Shop" } }
         }, idempotencyKey: "key-1");
 
         Assert.Equal("210707103033915995", response.TransactionId);
@@ -51,6 +55,11 @@ public class TransactionsTests
         Assert.Equal(["VIS", "TWI"], root.GetProperty("paymentMethods").EnumerateArray().Select(e => e.GetString()));
         Assert.Equal("https://shop.test/ok", root.GetProperty("redirect").GetProperty("successUrl").GetString());
         Assert.Equal("https://shop.test/logo.png", root.GetProperty("PAP").GetProperty("imageUrl").GetString());
+        Assert.True(root.GetProperty("PFP").GetProperty("stepUp").GetBoolean());
+        Assert.Equal("CHE", root.GetProperty("billing").GetProperty("country").GetString());
+        Assert.Equal("Post", root.GetProperty("shipping").GetProperty("carrier").GetString());
+        Assert.Equal("Shop", root.GetProperty("KLN").GetProperty("hppTitle").GetString());
+        Assert.False(root.TryGetProperty("PFC", out _));
 
         var theme = root.GetProperty("theme").GetProperty("configuration");
         Assert.Equal("#336699", theme.GetProperty("brandColor").GetString());
@@ -101,7 +110,10 @@ public class TransactionsTests
                 "settle": { "amount": 1000 }
               },
               "TWI": { "alias": "alias-1", "fingerprint": "F-1" },
-              "PAP": { "payerId": "x" },
+              "PAP": { "payerId": "payer-1", "alias": "pp-alias" },
+              "PFC": { "masked": "****2345", "expiryMonth": "06" },
+              "PFP": { "maskedIban": "CH93xxxx" },
+              "KLN": { "anything": true },
               "history": [
                 { "action": "init", "amount": 1000, "source": "api", "date": "2026-11-10T12:33:51Z", "success": true },
                 { "action": "authorize", "autoSettle": true, "amount": 1000, "source": "redirect",
@@ -129,7 +141,11 @@ public class TransactionsTests
         Assert.Equal(2, status.History!.Count);
         Assert.Equal("authorize", status.History[1].Action);
         Assert.True(status.History[1].AutoSettle);
-        Assert.True(status.AdditionalProperties!.ContainsKey("PAP"));
+        Assert.Equal("payer-1", status.PayPal!.PayerId);
+        Assert.Equal("****2345", status.PostFinanceCard!.Masked);
+        Assert.Equal("CH93xxxx", status.PostFinancePay!.MaskedIban);
+        Assert.True(status.AdditionalProperties!.ContainsKey("KLN"));
+        Assert.False(status.AdditionalProperties.ContainsKey("PAP"));
     }
 
     [Fact]

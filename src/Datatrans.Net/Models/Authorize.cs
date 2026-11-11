@@ -32,12 +32,30 @@ public sealed class AuthorizeRequest
 
     /// <summary>Twint alias to charge</summary>
     [JsonPropertyName("TWI")]
-    public TwintAlias? Twint { get; set; }
+    public PaymentMethodAlias? Twint { get; set; }
+
+    /// <summary>PayPal alias to charge</summary>
+    [JsonPropertyName("PAP")]
+    public PayPalAuthorize? PayPal { get; set; }
+
+    /// <summary>PostFinance Card alias to charge</summary>
+    [JsonPropertyName("PFC")]
+    public PaymentMethodAlias? PostFinanceCard { get; set; }
+
+    /// <summary>PostFinance Pay alias to charge</summary>
+    [JsonPropertyName("PFP")]
+    public PaymentMethodAlias? PostFinancePay { get; set; }
+
+    /// <summary>Billing address</summary>
+    public BillingAddress? Billing { get; set; }
+
+    /// <summary>Shipping address</summary>
+    public ShippingAddress? Shipping { get; set; }
 
     /// <summary>Merchant reference data</summary>
     public Metadata? Metadata { get; set; }
 
-    /// <summary>Properties not modeled here, sent as is, for example <c>PFC</c> or <c>PAP</c></summary>
+    /// <summary>Properties not modeled here, sent as is, for example <c>KLN</c></summary>
     [JsonExtensionData]
     public IDictionary<string, object?>? AdditionalProperties { get; set; }
 }
@@ -58,13 +76,6 @@ public sealed class AliasCard
     public string? ExpiryYear { get; set; }
 }
 
-/// <summary>Twint alias used to authorize a payment</summary>
-public sealed class TwintAlias
-{
-    /// <summary>Alias received from a previous transaction made with <c>option.createAlias</c></summary>
-    public required string Alias { get; set; }
-}
-
 /// <summary>Body of <c>POST /v1/transactions/validate</c></summary>
 public sealed class ValidateRequest
 {
@@ -80,7 +91,15 @@ public sealed class ValidateRequest
     /// <summary>Card alias to validate</summary>
     public ValidateCard? Card { get; set; }
 
-    /// <summary>Properties not modeled here, sent as is, for example <c>PFC</c> or <c>PAP</c></summary>
+    /// <summary>PayPal alias to validate</summary>
+    [JsonPropertyName("PAP")]
+    public PaymentMethodAlias? PayPal { get; set; }
+
+    /// <summary>PostFinance Card alias to validate</summary>
+    [JsonPropertyName("PFC")]
+    public PaymentMethodAlias? PostFinanceCard { get; set; }
+
+    /// <summary>Properties not modeled here, sent as is, for example <c>KLN</c></summary>
     [JsonExtensionData]
     public IDictionary<string, object?>? AdditionalProperties { get; set; }
 }

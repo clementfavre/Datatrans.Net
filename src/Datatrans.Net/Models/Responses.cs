@@ -66,10 +66,22 @@ public sealed class StatusResponse
     [JsonPropertyName("TWI")]
     public TwintDetail? Twint { get; set; }
 
+    /// <summary>PayPal details, when PayPal was used</summary>
+    [JsonPropertyName("PAP")]
+    public PayPalDetail? PayPal { get; set; }
+
+    /// <summary>PostFinance Card details, when PostFinance Card was used</summary>
+    [JsonPropertyName("PFC")]
+    public PostFinanceCardDetail? PostFinanceCard { get; set; }
+
+    /// <summary>PostFinance Pay details, when PostFinance Pay was used</summary>
+    [JsonPropertyName("PFP")]
+    public PostFinancePayDetail? PostFinancePay { get; set; }
+
     /// <summary>Actions performed on the transaction</summary>
     public IList<TransactionAction>? History { get; set; }
 
-    /// <summary>Properties not modeled here, for example <c>PAP</c> or <c>PFC</c></summary>
+    /// <summary>Properties not modeled here, for example <c>KLN</c> or <c>REK</c></summary>
     [JsonExtensionData]
     public IDictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
