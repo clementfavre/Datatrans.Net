@@ -49,13 +49,26 @@ await client.Aliases.DeleteAsync(alias);
 Webhook, on the raw request body:
 
 ```csharp
-if (!DatatransWebhook.IsSignatureValid(signatureHeader, rawBody, hmacKey))
+// The tolerance rejects an old request replayed with its valid signature
+if (!DatatransWebhook.IsSignatureValid(signatureHeader, rawBody, hmacKey, tolerance: TimeSpan.FromMinutes(5)))
     return Results.Unauthorized();
 
 var payload = DatatransWebhook.Parse(rawBody);
 ```
 
 API errors throw a `DatatransException`. See the official [API reference](https://api-reference.datatrans.ch/) for the fields.
+
+## Payment methods
+
+With the payment page (Redirect or Lightbox), Datatrans renders the payment methods itself: cards, Twint, Apple Pay and Google Pay need no specific code. `PaymentMethods` restricts the list, all methods enabled on the merchant account are offered when it is null.
+
+```csharp
+PaymentMethods = [PaymentMethods.Visa, PaymentMethods.Mastercard, PaymentMethods.Twint, PaymentMethods.ApplePay, PaymentMethods.GooglePay]
+```
+
+The status tells which method was used: `PaymentMethod`, `Card.WalletIndicator` for a card coming from Apple Pay or Google Pay, `Twint` for Twint.
+
+Properties without a typed model, for example the `TWI` options, go through `AdditionalProperties` and are sent as is.
 
 ## License
 
