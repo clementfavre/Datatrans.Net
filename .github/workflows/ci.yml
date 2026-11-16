@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # Integration tests are skipped when the sandbox secrets are not set (forks, missing secrets)
+      - name: Test
+        run: dotnet test --no-build --configuration Release --logger "console;verbosity=normal"
+        env:
+          Datatrans__MerchantId: ${{ secrets.DATATRANS_MERCHANT_ID }}
+          Datatrans__Password: ${{ secrets.DATATRANS_PASSWORD }}
+          Datatrans__CardAlias: ${{ secrets.DATATRANS_CARD_ALIAS }}
+          Datatrans__CardExpiryMonth: ${{ secrets.DATATRANS_CARD_EXPIRY_MONTH }}
+          Datatrans__CardExpiryYear: ${{ secrets.DATATRANS_CARD_EXPIRY_YEAR }}
+
+      - name: Pack
+        run: dotnet pack src/Datatrans.Net/Datatrans.Net.csproj --no-build --configuration Release --output artifacts
