@@ -267,6 +267,9 @@ public sealed class TransactionAction
     /// <summary>Whether the action succeeded</summary>
     public bool? Success { get; set; }
 
+    /// <summary>Splits of the action, for marketplace merchants</summary>
+    public Marketplace? Marketplace { get; set; }
+
     /// <summary>IP address the action came from</summary>
     public string? Ip { get; set; }
 }

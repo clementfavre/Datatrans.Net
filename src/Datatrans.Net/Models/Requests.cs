@@ -56,6 +56,9 @@ public sealed class InitRequest
     /// <summary>Order with its articles, for payment methods that support it</summary>
     public Order? Order { get; set; }
 
+    /// <summary>Split between sub-merchants, for marketplace merchants</summary>
+    public Marketplace? Marketplace { get; set; }
+
     /// <summary>Webhook override, merchant configuration applies when null</summary>
     public WebhookRequest? Webhook { get; set; }
 
@@ -190,6 +193,9 @@ public sealed class SettleRequest
     /// <summary>Set to settle the authorized amount in several steps</summary>
     public PartialCapture? PartialCapture { get; set; }
 
+    /// <summary>Split between sub-merchants, for marketplace merchants</summary>
+    public Marketplace? Marketplace { get; set; }
+
     /// <summary>Properties not modeled here, sent as is</summary>
     [JsonExtensionData]
     public IDictionary<string, object?>? AdditionalProperties { get; set; }
@@ -223,6 +229,9 @@ public sealed class CreditRequest
 
     /// <summary>Order with its articles, for payment methods that support it</summary>
     public Order? Order { get; set; }
+
+    /// <summary>Split between sub-merchants, for marketplace merchants</summary>
+    public Marketplace? Marketplace { get; set; }
 
     /// <summary>Properties not modeled here, sent as is</summary>
     [JsonExtensionData]

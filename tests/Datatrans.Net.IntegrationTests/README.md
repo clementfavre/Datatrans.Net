@@ -32,6 +32,16 @@ dotnet user-secrets set "Datatrans:CardExpiryYear" "28"
 
 The expiry is the one entered on the payment page. In GitHub Actions: `DATATRANS_CARD_ALIAS`, `DATATRANS_CARD_EXPIRY_MONTH`, `DATATRANS_CARD_EXPIRY_YEAR`.
 
+## Sub-merchant id (optional)
+
+For a marketplace merchant, the init with a split needs a sub-merchant id:
+
+```
+dotnet user-secrets set "Datatrans:SubMerchantId" "..."
+```
+
+The id is not checked at init, so the test only proves the request format. In GitHub Actions: `DATATRANS_SUB_MERCHANT_ID`.
+
 ## Run
 
 ```

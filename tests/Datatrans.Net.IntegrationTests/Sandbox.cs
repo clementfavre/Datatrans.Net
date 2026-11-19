@@ -23,6 +23,9 @@ internal sealed class Sandbox
 
     public string? CardExpiryYear { get; private init; }
 
+    /// <summary>Sub-merchant id for the marketplace splits, optional</summary>
+    public string? SubMerchantId { get; private init; }
+
     /// <summary>Null when the merchant id or the password is missing</summary>
     public static Sandbox? Current { get; } = Load();
 
@@ -68,7 +71,8 @@ internal sealed class Sandbox
         {
             CardAlias = NullIfEmpty(section["CardAlias"]),
             CardExpiryMonth = NullIfEmpty(section["CardExpiryMonth"]),
-            CardExpiryYear = NullIfEmpty(section["CardExpiryYear"])
+            CardExpiryYear = NullIfEmpty(section["CardExpiryYear"]),
+            SubMerchantId = NullIfEmpty(section["SubMerchantId"])
         };
     }
 
@@ -103,5 +107,15 @@ public sealed class SandboxAliasFactAttribute : FactAttribute
     {
         if (Sandbox.Current?.CardAlias is null)
             Skip = "Sandbox card alias missing, set Datatrans:CardAlias, Datatrans:CardExpiryMonth and Datatrans:CardExpiryYear";
+    }
+}
+
+/// <summary>Skipped when the sandbox credentials or the sub-merchant id are missing</summary>
+public sealed class SandboxMarketplaceFactAttribute : FactAttribute
+{
+    public SandboxMarketplaceFactAttribute()
+    {
+        if (Sandbox.Current?.SubMerchantId is null)
+            Skip = "Sandbox sub-merchant id missing, set Datatrans:SubMerchantId";
     }
 }

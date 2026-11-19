@@ -36,6 +36,7 @@ jobs:
           Datatrans__CardAlias: ${{ secrets.DATATRANS_CARD_ALIAS }}
           Datatrans__CardExpiryMonth: ${{ secrets.DATATRANS_CARD_EXPIRY_MONTH }}
           Datatrans__CardExpiryYear: ${{ secrets.DATATRANS_CARD_EXPIRY_YEAR }}
+          Datatrans__SubMerchantId: ${{ secrets.DATATRANS_SUB_MERCHANT_ID }}
 
       - name: Pack
         run: dotnet pack src/Datatrans.Net/Datatrans.Net.csproj --no-build --configuration Release --output artifacts

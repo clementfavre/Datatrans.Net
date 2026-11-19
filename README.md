@@ -70,6 +70,31 @@ The status tells which method was used: `PaymentMethod`, `Card.WalletIndicator` 
 
 Properties without a typed model, for example the `TWI` options, go through `AdditionalProperties` and are sent as is.
 
+## Marketplace
+
+Marketplace merchants split each transaction between sub-merchants. `Marketplace` is available on init, authorize, settle and credit, and is returned in the status history. The split amounts must add up to the transaction amount, Datatrans rejects the request otherwise.
+
+```csharp
+var init = await client.Transactions.InitAsync(new InitRequest
+{
+    Amount = 1000,
+    Currency = "CHF",
+    Refno = "order-42",
+    AutoSettle = true,
+    Marketplace = new Marketplace
+    {
+        Splits =
+        [
+            // Commission and VAT are optional, the commission is deducted from the sub-merchant share
+            new MarketplaceSplit { SubMerchantId = "1234567890", Amount = 700, Commission = 70, Vat = 5 },
+            new MarketplaceSplit { SubMerchantId = "0987654321", Amount = 300 }
+        ]
+    }
+});
+```
+
+Leave `Marketplace` null on a merchant account without marketplace, nothing is sent.
+
 ## License
 
 [MIT](LICENSE)

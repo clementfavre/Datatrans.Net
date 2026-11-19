@@ -44,6 +44,31 @@ public class SandboxTransactionsTests
         Assert.False(status.IsPaid);
     }
 
+    // Only proves the format, the sub-merchant id is not checked at init
+    [SandboxMarketplaceFact]
+    public async Task Init_with_auto_settle_accepts_a_marketplace_split()
+    {
+        var client = Settings.CreateClient();
+
+        var init = await client.Transactions.InitAsync(new InitRequest
+        {
+            Amount = 1000,
+            Currency = Currency,
+            Refno = Sandbox.NewRefno(),
+            AutoSettle = true,
+            Marketplace = new Marketplace
+            {
+                Splits = [new MarketplaceSplit { SubMerchantId = Settings.SubMerchantId!, Amount = 1000 }]
+            },
+            Redirect = Sandbox.Redirect
+        });
+
+        Assert.False(string.IsNullOrWhiteSpace(init.TransactionId));
+
+        var status = await client.Transactions.StatusAsync(init.TransactionId);
+        Assert.Equal(TransactionStatus.Initialized, status.Status);
+    }
+
     [SandboxFact]
     public async Task Status_of_an_unknown_transaction_throws()
     {

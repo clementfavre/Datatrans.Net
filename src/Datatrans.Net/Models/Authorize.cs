@@ -24,6 +24,9 @@ public sealed class AuthorizeRequest
     /// <summary>Order with its articles, for payment methods that support it</summary>
     public Order? Order { get; set; }
 
+    /// <summary>Split between sub-merchants, for marketplace merchants</summary>
+    public Marketplace? Marketplace { get; set; }
+
     /// <summary>Settle right after the authorization, merchant configuration applies when null</summary>
     public bool? AutoSettle { get; set; }
 
