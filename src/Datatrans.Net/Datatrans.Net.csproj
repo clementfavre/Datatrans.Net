@@ -11,9 +11,9 @@
 
   <PropertyGroup>
     <PackageId>Datatrans.Net</PackageId>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <Authors>Clément Favre</Authors>
-    <Description>Unofficial .NET client for the Datatrans payment API (v1 transactions): init, status, settle, cancel, refund and webhook signature validation. Not affiliated with Datatrans AG.</Description>
+    <Description>Unofficial .NET client for the Datatrans payment API (v1): transactions (init, status, authorize, settle, cancel, refund, increase), saved card aliases, marketplace splits and webhook signature validation. Not affiliated with Datatrans AG.</Description>
     <PackageTags>datatrans;payment;psp;twint;client</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>

@@ -1,4 +1,4 @@
-# Publishes the package to nuget.org when a version tag is pushed, for example v0.1.0
+# Publishes the package to nuget.org when a version tag is pushed, for example v1.0.0
 # Setup: a trusted publishing policy on nuget.org (owner, repository, workflow file release.yml)
 # and the repository secret NUGET_USER with the nuget.org profile name
 name: Release
