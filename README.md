@@ -1,5 +1,7 @@
 # Datatrans.Net
 
+[![NuGet](https://img.shields.io/nuget/v/Datatrans.Net.svg)](https://www.nuget.org/packages/Datatrans.Net)
+
 Unofficial .NET client for the [Datatrans](https://www.datatrans.ch) payment API (`net8.0`, `net10.0`).
 
 Not affiliated with Datatrans AG.
