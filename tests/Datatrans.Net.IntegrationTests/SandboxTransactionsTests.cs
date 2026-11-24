@@ -11,6 +11,11 @@ public class SandboxTransactionsTests
 
     private static Sandbox Settings => Sandbox.Current!;
 
+    // A marketplace merchant must split every settle and refund, null on a regular merchant
+    private static Marketplace? Split(long amount) => Settings.SubMerchantId is null
+        ? null
+        : new Marketplace { Splits = [new MarketplaceSplit { SubMerchantId = Settings.SubMerchantId, Amount = amount }] };
+
     // One method per case, so a method not enabled on the merchant shows up on its own
     [SandboxTheory]
     [InlineData(PaymentMethods.Visa)]
@@ -127,13 +132,13 @@ public class SandboxTransactionsTests
         Assert.True(authorized.IsPaid);
 
         await client.Transactions.SettleAsync(authorize.TransactionId,
-            new SettleRequest { Amount = 1000, Currency = Currency, Refno = refno });
+            new SettleRequest { Amount = 1000, Currency = Currency, Refno = refno, Marketplace = Split(1000) });
 
         var settled = await client.Transactions.StatusAsync(authorize.TransactionId);
         Assert.Equal(TransactionStatus.Settled, settled.Status);
 
         var credit = await client.Transactions.CreditAsync(authorize.TransactionId,
-            new CreditRequest { Amount = 500, Currency = Currency, Refno = Sandbox.NewRefno() });
+            new CreditRequest { Amount = 500, Currency = Currency, Refno = Sandbox.NewRefno(), Marketplace = Split(500) });
 
         var refund = await client.Transactions.StatusAsync(credit.TransactionId);
         Assert.Equal(TransactionType.Credit, refund.Type);
