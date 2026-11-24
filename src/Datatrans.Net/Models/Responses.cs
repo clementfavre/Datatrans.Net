@@ -85,10 +85,13 @@ public sealed class StatusResponse
     [JsonExtensionData]
     public IDictionary<string, JsonElement>? AdditionalProperties { get; set; }
 
-    /// <summary>True when the payment went through, authorized or already settled</summary>
+    /// <summary>
+    /// True when a payment went through, authorized or already settled,
+    /// always false for a refund (<c>credit</c>) or a card check
+    /// </summary>
     [JsonIgnore]
-    public bool IsPaid => Status is TransactionStatus.Authorized or TransactionStatus.Settled
-        or TransactionStatus.Transmitted;
+    public bool IsPaid => Type == TransactionType.Payment
+        && Status is TransactionStatus.Authorized or TransactionStatus.Settled or TransactionStatus.Transmitted;
 }
 
 /// <summary>Kind of transaction</summary>

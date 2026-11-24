@@ -162,6 +162,22 @@ public class TransactionsTests
         Assert.Equal(FailReason.SoftDeclined, status.Detail!.Fail!.Reason);
     }
 
+    [Theory]
+    [InlineData(TransactionType.Payment, TransactionStatus.Authorized, true)]
+    [InlineData(TransactionType.Payment, TransactionStatus.Settled, true)]
+    [InlineData(TransactionType.Payment, TransactionStatus.Transmitted, true)]
+    [InlineData(TransactionType.Payment, TransactionStatus.Canceled, false)]
+    [InlineData(TransactionType.Credit, TransactionStatus.Settled, false)]
+    [InlineData(TransactionType.CardCheck, TransactionStatus.Authorized, false)]
+    [InlineData(TransactionType.Unknown, TransactionStatus.Authorized, false)]
+    public void IsPaid_is_only_true_for_a_payment_that_went_through(TransactionType type, TransactionStatus status,
+        bool expected)
+    {
+        var response = new StatusResponse { Type = type, Status = status };
+
+        Assert.Equal(expected, response.IsPaid);
+    }
+
     [Fact]
     public async Task Settle_posts_to_the_settle_endpoint()
     {
